@@ -48,7 +48,7 @@ const Trendy = () => {
   const theme = useSelector((state) => state.theme);
   const music = useSelector((state) => state.listMusic);
   const isFocused = useIsFocused();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   return (
     <Container theme={theme}>
       <View style={{padding: 4, marginBottom: 12}}>
@@ -89,7 +89,9 @@ const Trendy = () => {
               trend={true}
               openInfo={() => null}
               handlePress={() => dispatch(setIsPlayingAction(item))}
-              background={state.linePress == item.id ? {backgroundColor: '#9257df'} : {}}
+              background={
+                state.linePress == item.id ? {backgroundColor: '#9257df'} : {}
+              }
             />
           )}
           keyExtractor={(item) => item.url}

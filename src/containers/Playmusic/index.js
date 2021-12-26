@@ -99,9 +99,10 @@ export default function Playmusic({
     dispatch(setIsPlayingAction(allMusicstart[song.id]));
   };
   const previousmusiccc = () => {
-    if(song.id>1){
-    TrackPlayer.skipToPrevious();
-    dispatch(setIsPlayingAction(allMusicstart[song.id - 2]));}
+    if (song.id > 1) {
+      TrackPlayer.skipToPrevious();
+      dispatch(setIsPlayingAction(allMusicstart[song.id - 2]));
+    }
   };
   const spinValue = useRef(new Animated.Value(0)).current;
   // const startSpin = () => {

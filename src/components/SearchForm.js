@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Searchbar} from 'react-native-paper';
@@ -20,9 +20,11 @@ const SearchForm = () => {
         placeholder="Tìm kiếm"
         onChangeText={onChangeSearch}
         value={searchQuery}
-        onSubmitEditing={() => navigation.navigate('ListSearch',{
-          value:searchQuery
-        })}
+        onSubmitEditing={() =>
+          navigation.navigate('ListSearch', {
+            value: searchQuery,
+          })
+        }
         style={{
           backgroundColor: theme.PRIMARY_BACKGROUND_COLOR,
         }}
@@ -30,9 +32,11 @@ const SearchForm = () => {
         inputStyle={{color: theme.PRIMARY_TEXT_COLOR}}
         placeholderTextColor={theme.PRIMARY_TEXT_COLOR}
         autoFocus
-        onIconPress={() => navigation.navigate('ListSearch',{
-          value:searchQuery
-        })}
+        onIconPress={() =>
+          navigation.navigate('ListSearch', {
+            value: searchQuery,
+          })
+        }
       />
       <View style={localStyles.suggestions}>
         <ButtonTheme

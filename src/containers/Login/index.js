@@ -72,17 +72,17 @@ export default function Login() {
         }
       }
       if (check) {
-        if(checked){
+        if (checked) {
           storeData(myacc);
         }
-        
+
         navigation.navigate('Main');
       } else {
         Alert.alert('Tài khoản sai');
       }
     }
   }
-  
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ContainerView style={Styles.loginForm}>
