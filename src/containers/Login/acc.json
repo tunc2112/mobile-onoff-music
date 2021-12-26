@@ -1,0 +1,34 @@
+{
+  "acc": [
+    {
+      "id": 1,
+      "name": "Nguyễn Văn THắng Em",
+      "email": "thang@gmail.com",
+      "password": "123456"
+    },
+    {
+      "id": 2,
+      "name": "Nguyễn Đức Huynh",
+      "email": "huynh@gmail.com",
+      "password": "123456"
+    },
+    {
+      "id": 3,
+      "name": "Lê Văn Nhân",
+      "email": "nhan@gmail.com",
+      "password": "123456"
+    },
+    {
+      "id": 4,
+      "name": "Dương Tuấn Phương",
+      "email": "phuong@gmail.com",
+      "password": "123456"
+    },
+    {
+      "id": 5,
+      "name": "Cao Quý Đăng",
+      "email": "dang@gmail.com",
+      "password": "123456"
+    }
+  ]
+}
