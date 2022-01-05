@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "name": "sample playlist",
+    "songinplaylist": [
+      {
+        "id": 1,
+        "name": "Chiếc Khăn Gió Ấm",
+        "url": "http://api.mp3.zing.vn/api/streaming/audio/ZWZBZC9F/320",
+        "singer": "Khánh Phương",
+        "image": "https://photo-resize-zmp3.zadn.vn/w480_r1x1_jpeg/covers/5/3/532da2124f0f17f8c4ee060756c2a569_1519722588.jpg",
+        "time": 266
+      },
+      {
+        "id": 2,
+        "name": "Hoa hải đường",
+        "url": "http://api.mp3.zing.vn/api/streaming/audio/ZWDAAU8Z/320",
+        "singer": "Jack",
+        "image": "https://photo-resize-zmp3.zadn.vn/w480_r1x1_jpeg/cover/a/8/6/2/a8626a5671f5a01250a074c4c8140cae.jpg",
+        "time": 230
+      }
+    ]
+  }
+]

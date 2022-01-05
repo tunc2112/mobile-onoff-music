@@ -130,8 +130,9 @@ export default function Playmusic({
           </View>
           <View style={styles.control}>
             <IconCustom
-              name={'md-heart-outline'}
+              name={song.islike ? 'md-heart' : 'md-heart-outline'}
               size={22}
+              color="pink"
               handlePress={() => setModalVisible(false)}
             />
             <TextTheme style={{marginHorizontal: 20 * unitW}}>

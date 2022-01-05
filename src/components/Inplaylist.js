@@ -2,17 +2,25 @@ import React from 'react';
 import {FlatList} from 'react-native';
 import {ContainerView} from '../asset/styles/themes';
 import {useRoute} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
 import SongItem from './SongItem';
+import {setIsPlayingAction} from '../redux/actions';
+
 export default function Inplaylist() {
   const router = useRoute();
-  const song = router.params.song;
+  const dispatch = useDispatch();
+  const {songs} = router.params;
 
   return (
     <ContainerView>
       <FlatList
-        data={song}
+        data={songs}
         renderItem={({item}) => (
-          <SongItem item={item} openInfo={() => openInfo(item)} />
+          <SongItem
+            item={item}
+            openInfo={() => {}}
+            handlePress={() => dispatch(setIsPlayingAction(item))}
+          />
         )}
         keyExtractor={(item) => item.url}
         showsVerticalScrollIndicator={false}

@@ -19,61 +19,38 @@ import {
 } from '../asset/styles/themes';
 import Modal from 'react-native-modal';
 import {styles} from '../containers/Library/styles';
+import {getPlaylistFromLocal, saveData} from '../containers/storage';
+
 const InfoSongPopup = ({item, showInfo, hiddenInfo}) => {
+  // console.log('Current song', item);
   const [modalVisible, setModalVisible] = useState(false);
   const [allPlaylist, setAllPlaylist] = useState([]);
-  const [musicCheck, setMusicCheck] = useState([]);
   async function getdata() {
     try {
-      const response = await fetch(
-        `https://fakeserver-musicaap.herokuapp.com/playlist`,
-      );
-      const jsonData = await response.json();
-      setAllPlaylist(jsonData);
+      // console.log('Current song', item.name);
+      const playlists = (await getPlaylistFromLocal()) || [];
+      // console.log('Playlists', playlists);
+      setAllPlaylist(playlists);
     } catch (e) {
       console.log(e);
     }
   }
   useEffect(() => {
     getdata();
-  }, [allPlaylist]);
-  async function patchData(id, name) {
-    let aaaa = musicCheck;
+  }, []);
+  async function addSongToPlaylist(playlistId) {
+    let updatedPlaylist = [];
     for (let i = 0; i < allPlaylist.length; i++) {
-      if (id === allPlaylist[i].id) {
-        aaaa.push();
+      let currentPlaylist = allPlaylist[i];
+      if (playlistId === allPlaylist[i].id) {
+        currentPlaylist.songinplaylist.push(item);
       }
+      updatedPlaylist.push(currentPlaylist);
     }
-
-    const response = await fetch(
-      'https://fakeserver-musicaap.herokuapp.com/playlist' + '/' + id,
-      {
-        method: 'PUT',
-        headers: {
-          // Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: name,
-          songinplaylist: aaaa,
-        }),
-      },
-    )
-      .then((response) => {
-        response.json().then((response) => {
-          console.log(response);
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    await saveData('playlists', updatedPlaylist);
+    await getdata();
     setModalVisible(false);
   }
-  const checkmusic = (item2) => {
-    setModalVisible(true);
-    musicCheck.push(item2);
-    // console.log(musicCheck)
-  };
   return (
     <Modal
       isVisible={showInfo}
@@ -94,7 +71,7 @@ const InfoSongPopup = ({item, showInfo, hiddenInfo}) => {
         </View>
         <View>
           <OptionItem icon={'md-eye-off-outline'} text="Ẩn bài hát" />
-          <TouchableOpacity onPress={() => checkmusic(item)}>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
             <OptionItem icon={'md-bookmark-outline'} text="Thêm vào playlist" />
           </TouchableOpacity>
 
@@ -121,7 +98,7 @@ const InfoSongPopup = ({item, showInfo, hiddenInfo}) => {
             data={allPlaylist}
             renderItem={({item}) => (
               <ButtonTheme
-                onPress={() => patchData(item.id, item.name)}
+                onPress={() => addSongToPlaylist(item.id)}
                 style={styles.buttonInputPlaylist}>
                 <TextWhite>{item.name}</TextWhite>
               </ButtonTheme>

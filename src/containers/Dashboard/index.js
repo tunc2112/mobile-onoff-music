@@ -22,8 +22,6 @@ const Dashboard = () => {
     music: [],
     songInfo: {},
     showInfo: false,
-    isShowAlert: false,
-    alert: '',
     openSetting: false,
     openAcc: false,
     userInfo: {
@@ -31,7 +29,6 @@ const Dashboard = () => {
       sign: false,
     },
   });
-  const [heart, setHeart] = useState(false);
   const [song, setSong] = useState({
     idsong: 0,
     namesong: '',
@@ -39,6 +36,10 @@ const Dashboard = () => {
     singersong: '',
     imagesong: '',
     time: 0,
+  });
+  const [alert, setAlert] = useState({
+    isShown: false,
+    title: '',
   });
   const dispatch = useDispatch();
   useEffect(() => {
@@ -84,48 +85,22 @@ const Dashboard = () => {
       songInfo: {},
     });
   }
-  function hiddenAlert() {
-    setState({
-      ...state,
-      isShowAlert: false,
-      alert: '',
-    });
+  async function updateMusics() {
+    let body_api = {
+      endpoint: 'music',
+      callback: (error, result) => callBackFetch(error, result),
+    };
+    dispatch(fetchAsyncAction(body_api));
   }
-  async function likee(id) {
-    const response = await fetch(
-      'https://fakeserver-musicaap.herokuapp.com/music' + '/' + id,
-      {
-        method: 'PATCH',
-        headers: {
-          // Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          islike: true,
-        }),
-      },
-    )
-      .then((response) => {
-        response.json().then((response) => {
-          console.log(response);
-          setHeart(true);
-          let body_api = {
-            endpoint: 'music',
-            callback: (error, result) => callBackFetch(error, result),
-          };
-          dispatch(fetchAsyncAction(body_api));
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }
-  function handleLike(id) {
-    likee(id);
-    setState({
-      ...state,
-      isShowAlert: true,
-      alert: 'Đã thêm vào danh sách yêu thích',
+  function onLovePressed(item) {
+    console.log('liking ' + item.id);
+    updateMusics();
+    setAlert({
+      ...alert,
+      isShown: true,
+      title: item.islike
+        ? 'Đã loại khỏi danh sách yêu thích'
+        : 'Đã thêm vào danh sách yêu thích',
     });
   }
   const navigation = useNavigation();
@@ -171,7 +146,7 @@ const Dashboard = () => {
               <SongItem
                 item={item}
                 openInfo={() => openInfo(item)}
-                handleLike={() => handleLike(item.id)}
+                onLovePressed={() => onLovePressed(item)}
                 like={state.userInfo.sign}
                 handlePress={() => dispatch(setIsPlayingAction(item))}
               />
@@ -189,9 +164,9 @@ const Dashboard = () => {
         />
       )}
       <AnalogPopup
-        isShow={state.isShowAlert}
-        item={state.alert}
-        hidden={hiddenAlert}
+        isShown={alert.isShown}
+        text={alert.title}
+        hidden={() => setAlert({...alert, isShown: false})}
       />
       <SettingPopup isOpen={state.openSetting} hidden={hiddenSetting} />
       {state.openAcc && <AccPopup isOpen={state.openAcc} hidden={hiddenAcc} />}

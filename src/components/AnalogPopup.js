@@ -3,26 +3,26 @@ import {StyleSheet, Text, View} from 'react-native';
 import Modal from 'react-native-modal';
 import {unitH} from '../asset/styles/size';
 
-const AnalogPopup = ({isShow, item, hidden}) => {
+const AnalogPopup = ({isShown, text, hidden}) => {
   useEffect(() => {
-    if (isShow) {
+    if (isShown) {
       setTimeout(() => {
         hidden();
       }, 1000);
     }
-  }, [isShow]);
+  }, [isShown]);
   return (
     <Modal
-      isVisible={isShow}
+      isVisible={isShown}
       style={localStyles.modal}
-      animationIn="bounceInDown"
-      animationOut="bounceOutUp"
+      animationIn="fadeInDown"
+      animationOut="fadeOutUp"
       animationInTiming={600}
       animationOutTiming={600}
       backdropTransitionInTiming={600}
       hasBackdrop={false}>
       <View style={localStyles.modalContain}>
-        <Text style={localStyles.modalLable}>{item}</Text>
+        <Text style={localStyles.modalLabel}>{text}</Text>
       </View>
     </Modal>
   );
@@ -31,11 +31,12 @@ const localStyles = StyleSheet.create({
   modal: {justifyContent: 'flex-start'},
   modalContain: {
     padding: 8 * unitH,
-    backgroundColor: '#fff',
+    backgroundColor: '#66e146',
+    opacity: 0.9,
     marginHorizontal: 20 * unitH,
     borderRadius: 10,
   },
-  modalLable: {textAlign: 'center', fontSize: 16},
+  modalLabel: {textAlign: 'center', fontSize: 16},
 });
 
 export default AnalogPopup;

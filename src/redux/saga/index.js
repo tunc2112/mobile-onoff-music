@@ -5,22 +5,24 @@ import {
   onLoadingAction,
   setDataAction,
 } from '../actions';
-const fetchAsyncService = async (endpoint) => {
-  try {
-    let response = await fetch(
-      `https://fakeserver-musicaap.herokuapp.com/${endpoint}`,
-    );
-    return response.json();
-  } catch (error) {
-    throw error;
+import {getData, saveData} from '../../containers/storage';
+import musics from '../../../music.json';
+
+const getMusics = async () => {
+  const savedMusics = await getData('musics');
+  if (!savedMusics) {
+    await saveData('musics', musics);
+    return musics;
   }
+  return getData('musics');
 };
+
 function* fetchAsyncWatch() {
   yield takeLatest(fetchAsyncAction, function* ({payload}) {
     try {
       yield put(onLoadingAction());
-      const {endpoint} = payload;
-      const result = yield call(fetchAsyncService, endpoint);
+      // const {endpoint} = payload;
+      const result = yield call(getMusics);
       if (result) {
         yield put(setDataAction(result));
         if (payload?.callback) {

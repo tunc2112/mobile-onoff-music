@@ -13,51 +13,37 @@ import Playlist from '../../components/Playlist';
 import {useNavigation} from '@react-navigation/native';
 import IconCustom from '../../components/IconCustom';
 import Modal from 'react-native-modal';
+import {getData, getPlaylistFromLocal, saveData} from '../storage';
 
 const Stream = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [allPlaylist, setAllPlaylist] = useState([]);
   const [namePlaylist, setNamePlaylist] = useState('');
-  async function getdata() {
+  async function getPlaylists() {
     try {
-      const response = await fetch(
-        `https://fakeserver-musicaap.herokuapp.com/playlist`,
-      );
-      // console.log(response)
-      const jsonData = await response.json();
-      setAllPlaylist(jsonData);
+      const playlists = (await getPlaylistFromLocal()) || [];
+      console.log('Playlists', playlists);
+      setAllPlaylist(playlists);
     } catch (e) {
       console.log(e);
     }
   }
   useEffect(() => {
     // console.log('fc',isFocused)
-    getdata();
+    getPlaylists();
   }, []);
   async function postPlaylist(data) {
-    if (namePlaylist != '') {
-      try {
-        const response = await fetch(
-          `https://fakeserver-musicaap.herokuapp.com/playlist`,
-          {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              name: data,
-              songinplaylist: [],
-            }),
-          },
-        );
-        const jsonData = await response.json();
-        console.log(jsonData);
-      } catch (e) {
-        console.log(e);
-      }
+    if (namePlaylist !== '') {
+      const playlists = await getPlaylistFromLocal();
+      const newPlaylist = {
+        id: playlists.length + 1,
+        name: namePlaylist,
+        songinplaylist: [],
+      };
+      playlists.push(newPlaylist);
+      await saveData('playlists', playlists);
     }
-    getdata();
+    getPlaylists();
   }
   const createPlaylist = () => {
     postPlaylist(namePlaylist);
@@ -66,7 +52,7 @@ const Stream = () => {
   const navigation = useNavigation();
   const openInplaylist = (songinplaylist) => {
     navigation.navigate('Inplaylist', {
-      song: songinplaylist,
+      songs: songinplaylist,
       user: 'Me',
     });
   };
