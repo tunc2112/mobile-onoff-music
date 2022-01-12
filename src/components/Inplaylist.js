@@ -18,6 +18,7 @@ export default function Inplaylist() {
         renderItem={({item}) => (
           <SongItem
             item={item}
+            showLoveButton={false}
             openInfo={() => {}}
             handlePress={() => dispatch(setIsPlayingAction(item))}
           />

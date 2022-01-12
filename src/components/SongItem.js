@@ -4,17 +4,19 @@ import {unitH, unitW} from '../asset/styles/size';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Text1, Text2, TextTheme} from '../asset/styles/themes';
 import {getData, saveData} from '../containers/storage';
+import {useDispatch} from 'react-redux';
+import {fetchAsyncAction} from '../redux/actions';
 
 const SongItem = ({
   item,
   trend,
-  like,
   openInfo,
+  showLoveButton = true,
   onLovePressed = null,
   handlePress = null,
   background = {},
-  heart = false,
 }) => {
+  const dispatch = useDispatch();
   const toggleLike = async () => {
     const musics = await getData('musics');
     const updatedMusics = musics.map((music) => {
@@ -24,6 +26,7 @@ const SongItem = ({
       return music;
     });
     await saveData('musics', updatedMusics);
+    dispatch(fetchAsyncAction());
     if (typeof onLovePressed === 'function') {
       onLovePressed();
     }
@@ -40,15 +43,17 @@ const SongItem = ({
           </View>
         </TouchableOpacity>
         <View style={localStyles.options}>
-          <TouchableOpacity onPress={toggleLike} style={localStyles.p4}>
-            <TextTheme>
-              <Icon
-                name={item.islike ? 'md-heart' : 'md-heart-outline'}
-                size={24}
-                color="pink"
-              />
-            </TextTheme>
-          </TouchableOpacity>
+          {showLoveButton && (
+            <TouchableOpacity onPress={toggleLike} style={localStyles.p4}>
+              <TextTheme>
+                <Icon
+                  name={item.islike ? 'md-heart' : 'md-heart-outline'}
+                  size={24}
+                  color="pink"
+                />
+              </TextTheme>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity onPress={openInfo} style={[localStyles.p4]}>
             <TextTheme>
               <Icon name="md-ellipsis-vertical" size={24} />

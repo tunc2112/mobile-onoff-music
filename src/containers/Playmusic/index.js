@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import TrackPlayer from 'react-native-track-player';
+import TrackPlayer, {useTrackPlayerProgress} from 'react-native-track-player';
 import Progress from './Progress';
 import {useDispatch} from 'react-redux';
 import {unitH, unitW} from '../../asset/styles/size';
@@ -31,6 +31,8 @@ export default function Playmusic({
   allMusic,
 }) {
   const [isPlay, setIsPlay] = useState(true);
+  const progress = useTrackPlayerProgress();
+  console.log('progress', progress);
 
   const dispatch = useDispatch();
 
@@ -75,7 +77,7 @@ export default function Playmusic({
       await TrackPlayer.reset();
       await TrackPlayer.add(allMusic);
       await TrackPlayer.skip(String(song.id));
-      await TrackPlayer.play();
+      // await TrackPlayer.play();
     });
     // startSpin;
   }, []);
@@ -104,6 +106,7 @@ export default function Playmusic({
       dispatch(setIsPlayingAction(allMusicstart[song.id - 2]));
     }
   };
+  const toggleRepeat = () => {};
   const spinValue = useRef(new Animated.Value(0)).current;
   // const startSpin = () => {
   Animated.loop(
@@ -121,7 +124,7 @@ export default function Playmusic({
   return (
     <View>
       <PlayingBar onPress={() => setModalVisible(true)}>
-        <Progress time={song.time} isPlay={isPlay} />
+        <Progress time={song.time} position={progress.position} />
         <View style={styles.playingbar}>
           <Image source={{uri: song.image}} style={styles.imagesongbottom} />
           <View>
@@ -174,7 +177,7 @@ export default function Playmusic({
             source={{uri: song.image}}
           />
           <View style={styles.slider}>
-            <Progress time={song.time} isPlay={isPlay} />
+            <Progress time={song.time} position={progress.position} />
           </View>
           {/* <Button title="ok" onPress={()=>setModalVisible(false)}/> */}
           <TextTheme style={styles.nameplay}>{song.name}</TextTheme>
@@ -199,7 +202,11 @@ export default function Playmusic({
               size={28}
               handlePress={nextmusiccc}
             />
-            <IconCustom name={'md-repeat-outline'} size={28} />
+            <IconCustom
+              name={'md-repeat-outline'}
+              size={28}
+              handlePress={toggleRepeat}
+            />
           </View>
         </ContainerView>
       </Modal>

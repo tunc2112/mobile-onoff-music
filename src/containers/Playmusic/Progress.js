@@ -1,46 +1,19 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useEffect} from 'react';
 import {View, StyleSheet, Animated} from 'react-native';
 
-function useInterval(callback, delay) {
-  const savedCallback = useRef();
-
-  // Remember the latest callback.
-  useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
-
-  // Set up the interval.
-  useEffect(() => {
-    function tick() {
-      savedCallback.current();
-    }
-    if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
-}
-
-export default function Progress(time) {
+export default function Progress({position, time}) {
   let animation = useRef(new Animated.Value(0));
-  console.log(time);
-  const [progress, setProgress] = useState(0);
-  useInterval(() => {
-    if (progress < time.time && time.isPlay) {
-      setProgress(progress + 1);
-    }
-  }, 1000);
 
   useEffect(() => {
     Animated.timing(animation.current, {
-      toValue: progress,
-      duration: time.time,
+      toValue: position,
+      duration: time,
       useNativeDriver: false,
     }).start();
-  }, [progress, time]);
+  }, [position, time]);
 
   const width = animation.current.interpolate({
-    inputRange: [0, time.time],
+    inputRange: [0, time],
     outputRange: ['0%', '100%'],
     extrapolate: 'clamp',
   });

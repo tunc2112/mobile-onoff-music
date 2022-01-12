@@ -80,7 +80,7 @@ const Stream = () => {
       <FlatList
         data={allPlaylist}
         renderItem={renderItem}
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item) => item.id.toString()}
       />
 
       <Modal

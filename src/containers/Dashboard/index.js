@@ -3,7 +3,7 @@ import {useIsFocused, useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
-import {useDispatch} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {Container, Text1} from '../../asset/styles/themes';
 import AccPopup from '../../components/AccPopup';
 import AnalogPopup from '../../components/AnalogPopup';
@@ -17,6 +17,7 @@ import {fetchAsyncAction, setIsPlayingAction} from '../../redux/actions';
 import {stylescreen} from './styled';
 
 const Dashboard = () => {
+  const musics = useSelector((state) => state.listMusic);
   const [state, setState] = useState({
     isLoading: true,
     music: [],
@@ -43,21 +44,9 @@ const Dashboard = () => {
   });
   const dispatch = useDispatch();
   useEffect(() => {
-    let body_api = {
-      endpoint: 'music',
-      callback: (error, result) => callBackFetch(error, result),
-    };
-    dispatch(fetchAsyncAction(body_api));
-    // getLocalData();
+    dispatch(fetchAsyncAction({}));
+    getLocalData();
   }, []);
-  function callBackFetch(error, result) {
-    if (result) {
-      setState({
-        ...state,
-        music: result,
-      });
-    }
-  }
   const getLocalData = async () => {
     let check = await AsyncStorage.getItem('@hasAcc');
     if (check) {
@@ -85,22 +74,12 @@ const Dashboard = () => {
       songInfo: {},
     });
   }
-  async function updateMusics() {
-    let body_api = {
-      endpoint: 'music',
-      callback: (error, result) => callBackFetch(error, result),
-    };
-    dispatch(fetchAsyncAction(body_api));
-  }
   function onLovePressed(item) {
     console.log('liking ' + item.id);
-    updateMusics();
     setAlert({
       ...alert,
       isShown: true,
-      title: item.islike
-        ? 'Đã loại khỏi danh sách yêu thích'
-        : 'Đã thêm vào danh sách yêu thích',
+      title: item.islike ? 'Đã bỏ thích' : 'Đã thêm vào danh sách yêu thích',
     });
   }
   const navigation = useNavigation();
@@ -119,7 +98,7 @@ const Dashboard = () => {
   const hiddenAcc = () => {
     setState({...state, openAcc: false});
   };
-  return state.music.length === 0 ? (
+  return musics.length === 0 ? (
     <Loading />
   ) : (
     <Container>
@@ -132,16 +111,16 @@ const Dashboard = () => {
       </View>
       <Text1 style={[stylescreen.DashboardTextFeatured]}>Featured Tracks</Text1>
       <ListAlbums
-        articles={state.music}
+        articles={musics}
         isloading={true}
         Song={song}
         setSong={setSong}
       />
       <Text1 style={stylescreen.DashboardTextFeatured}>Top Tracks</Text1>
       <View style={stylescreen.DashboardToptracks}>
-        {state.music.length !== 0 ? (
+        {musics.length !== 0 ? (
           <FlatList
-            data={state.music}
+            data={musics}
             renderItem={({item}) => (
               <SongItem
                 item={item}

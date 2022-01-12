@@ -29,7 +29,7 @@ const InfoSongPopup = ({item, showInfo, hiddenInfo}) => {
     try {
       // console.log('Current song', item.name);
       const playlists = (await getPlaylistFromLocal()) || [];
-      // console.log('Playlists', playlists);
+      console.log('Info song popup', playlists);
       setAllPlaylist(playlists);
     } catch (e) {
       console.log(e);

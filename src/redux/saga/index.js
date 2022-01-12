@@ -21,7 +21,6 @@ function* fetchAsyncWatch() {
   yield takeLatest(fetchAsyncAction, function* ({payload}) {
     try {
       yield put(onLoadingAction());
-      // const {endpoint} = payload;
       const result = yield call(getMusics);
       if (result) {
         yield put(setDataAction(result));

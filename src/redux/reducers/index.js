@@ -7,6 +7,7 @@ import {
   setDataAction,
   setIsPlayingAction,
 } from '../actions';
+
 const initialState = {
   isLoading: false,
   listMusic: [],

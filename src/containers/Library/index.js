@@ -1,7 +1,7 @@
 import React from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {unitH} from '../../asset/styles/size';
-import Local from './Local';
+import Favorites from './Favorites';
 import Stream from './Stream';
 import {View} from 'react-native';
 import {styles} from './styles';
@@ -31,8 +31,8 @@ const Library = () => {
             isFocused={isFocused}
           />
           <Tab.Screen
-            name="Local"
-            component={Local}
+            name="Favorites"
+            component={Favorites}
             options={{title: 'Nhạc yêu thích'}}
           />
         </Tab.Navigator>

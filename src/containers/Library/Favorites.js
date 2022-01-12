@@ -6,7 +6,7 @@ import {ContainerView} from '../../asset/styles/themes';
 import SongItem from '../../components/SongItem';
 import {setIsPlayingAction} from '../../redux/actions';
 
-const Local = () => {
+const Favorites = () => {
   const isFocused = useIsFocused();
   const music = useSelector((state) => state.listMusic);
   const dispatch = useDispatch();
@@ -31,4 +31,4 @@ const Local = () => {
   );
 };
 
-export default Local;
+export default Favorites;
