@@ -9,7 +9,7 @@ import TrackPlayer, {
 import Progress from './Progress';
 import {useDispatch, useSelector} from 'react-redux';
 import {unitH, unitW} from '../../asset/styles/size';
-import {setIsPlayingAction} from '../../redux/actions';
+import {setIsPlayingAction, setPlaylistTypeAction} from '../../redux/actions';
 import {
   ContainerView,
   PlayingBar,
@@ -27,6 +27,8 @@ export default function Playmusic({modalVisible, setModalVisible}) {
   const song = useSelector((state) => state.songPlaying);
   const listMusic = useSelector((state) => state.listMusic);
   const listPlay = useSelector((state) => state.listPlay);
+  const playlistType = useSelector((state) => state.playlistType);
+  const theme = useSelector((state) => state.theme);
 
   // console.log('Playmusic rendered', song.id);
 
@@ -35,7 +37,16 @@ export default function Playmusic({modalVisible, setModalVisible}) {
     if (event.type === TrackPlayerEvents.PLAYBACK_TRACK_CHANGED) {
       if (event.nextTrack != null) {
         if (event.track == null || event.track == song.id) {
-          dispatch(setIsPlayingAction(listMusic[event.nextTrack - 1]));
+          // Change song based on playlist type (shuffle, repeat,...)
+          let nextTrackIndex = Number(event.nextTrack) - 1;
+          if (playlistType === 'shuffle') {
+            nextTrackIndex = Math.floor(Math.random() * listPlay.length);
+          } else if (playlistType === 'repeat') {
+            nextTrackIndex = Number(event.track) - 1;
+            console.log('nextTrackIndex', nextTrackIndex);
+          }
+          TrackPlayer.skip(String(listMusic[nextTrackIndex].id));
+          dispatch(setIsPlayingAction(listMusic[nextTrackIndex]));
         }
       }
     }
@@ -94,6 +105,7 @@ export default function Playmusic({modalVisible, setModalVisible}) {
   }, []);
   useEffect(() => {
     TrackPlayer.skip(String(song.id));
+    console.log('song.id', song.id);
   }, [song]);
 
   const playmussic = () => {
@@ -113,7 +125,14 @@ export default function Playmusic({modalVisible, setModalVisible}) {
       dispatch(setIsPlayingAction(listMusic[song.id - 2]));
     }
   };
-  const toggleRepeat = () => {};
+  const toggleRepeat = () => {
+    const updatedType = playlistType !== 'repeat' ? 'repeat' : 'normal';
+    dispatch(setPlaylistTypeAction(updatedType));
+  };
+  const toggleShuffle = () => {
+    const updatedType = playlistType !== 'shuffle' ? 'shuffle' : 'normal';
+    dispatch(setPlaylistTypeAction(updatedType));
+  };
   const changeProgressTo = async (time) => {
     const targetTime = time[0];
     await TrackPlayer.seekTo(targetTime);
@@ -203,7 +222,12 @@ export default function Playmusic({modalVisible, setModalVisible}) {
           <TextTheme style={styles.nameplay}>{song.name}</TextTheme>
           <TextTheme style={styles.singerplay}>{song.singer}</TextTheme>
           <View style={styles.plpau}>
-            <IconCustom name={'md-shuffle-outline'} size={28} />
+            <IconCustom
+              name={'md-shuffle-outline'}
+              size={28}
+              color={playlistType === 'shuffle' ? theme.BUTTON : '#fff'}
+              handlePress={toggleShuffle}
+            />
             <IconCustom
               name={'md-play-skip-back'}
               size={28}
@@ -226,6 +250,7 @@ export default function Playmusic({modalVisible, setModalVisible}) {
               name={'md-repeat-outline'}
               size={28}
               handlePress={toggleRepeat}
+              color={playlistType === 'repeat' ? theme.BUTTON : '#fff'}
             />
           </View>
         </ContainerView>

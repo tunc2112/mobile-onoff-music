@@ -6,6 +6,7 @@ import {
   setDarkModeAction,
   setDataAction,
   setIsPlayingAction,
+  setPlaylistTypeAction,
 } from '../actions';
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
   listPlay: [],
   theme: darkTheme,
   showMusicPlayer: false,
+  playlistType: 'normal', // enum ['normal', 'shuffle', 'repeat']
 };
 export default handleActions(
   {
@@ -46,6 +48,12 @@ export default handleActions(
       return {
         ...state,
         theme: payload,
+      };
+    },
+    [setPlaylistTypeAction.toString()]: (state, {payload}) => {
+      return {
+        ...state,
+        playlistType: payload,
       };
     },
   },
