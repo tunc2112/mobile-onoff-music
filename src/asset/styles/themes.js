@@ -3,14 +3,14 @@ import {settingH, settingW, unitH} from './size';
 
 export const darkTheme = {
   mode: 'dark',
-  PRIMARY_BACKGROUND_COLOR: '#151621',
-  SECONDARY_BACKGROUND_COLOR: '#151621',
+  PRIMARY_BACKGROUND_COLOR: '#0f0d2b',
+  SECONDARY_BACKGROUND_COLOR: '#0f0d2b',
   PRIMARY_TEXT_COLOR: '#fff',
   SECONDARY_TEXT_COLOR: '#ffffff',
   BACKGROUND_PLAYING_BAR: '#2A1B39',
-  BUTTON: '#9257df',
+  BUTTON: '#173cce',
   tabBarOptions: {
-    activeTintColor: '#9257df',
+    activeTintColor: '#173cce',
     inactiveTintColor: '#99999F',
     showIcon: true,
     showLabel: false,

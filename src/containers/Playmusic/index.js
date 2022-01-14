@@ -1,17 +1,13 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {
-  Animated,
-  Easing,
-  Image,
-  Modal,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import TrackPlayer, {useTrackPlayerProgress} from 'react-native-track-player';
+import React, {useEffect, useRef} from 'react';
+import {Animated, Easing, Image, Modal, StyleSheet, View} from 'react-native';
+import TrackPlayer, {
+  TrackPlayerEvents,
+  usePlaybackState,
+  useTrackPlayerEvents,
+  useTrackPlayerProgress,
+} from 'react-native-track-player';
 import Progress from './Progress';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {unitH, unitW} from '../../asset/styles/size';
 import {setIsPlayingAction} from '../../redux/actions';
 import {
@@ -23,18 +19,33 @@ import {
 } from '../../asset/styles/themes';
 import IconCustom from '../../components/IconCustom';
 
-export default function Playmusic({
-  modalVisible,
-  setModalVisible,
-  song,
-  allMusicstart,
-  allMusic,
-}) {
-  const [isPlay, setIsPlay] = useState(true);
+export default function Playmusic({modalVisible, setModalVisible}) {
   const progress = useTrackPlayerProgress();
-  console.log('progress', progress);
-
+  const playbackState = usePlaybackState();
   const dispatch = useDispatch();
+
+  const song = useSelector((state) => state.songPlaying);
+  const listMusic = useSelector((state) => state.listMusic);
+  const listPlay = useSelector((state) => state.listPlay);
+
+  // console.log('Playmusic rendered', song.id);
+
+  useTrackPlayerEvents([TrackPlayerEvents.PLAYBACK_TRACK_CHANGED], (event) => {
+    console.log('song changed', event);
+    if (event.type === TrackPlayerEvents.PLAYBACK_TRACK_CHANGED) {
+      if (event.nextTrack != null) {
+        if (event.track == null || event.track == song.id) {
+          dispatch(setIsPlayingAction(listMusic[event.nextTrack - 1]));
+        }
+      }
+    }
+  });
+
+  const isPlaying = [
+    TrackPlayer.STATE_PLAYING,
+    TrackPlayer.STATE_BUFFERING,
+  ].includes(playbackState);
+  // console.log(playbackState, TrackPlayer.STATE_BUFFERING);
 
   const trackPlayerInit = async () => {
     await TrackPlayer.setupPlayer({
@@ -75,7 +86,7 @@ export default function Playmusic({
 
     TrackPlayer.setupPlayer().then(async () => {
       await TrackPlayer.reset();
-      await TrackPlayer.add(allMusic);
+      await TrackPlayer.add(listPlay);
       await TrackPlayer.skip(String(song.id));
       // await TrackPlayer.play();
     });
@@ -86,35 +97,35 @@ export default function Playmusic({
   }, [song]);
 
   const playmussic = () => {
-    if (!isPlay) {
+    if (!isPlaying) {
       TrackPlayer.play();
-      setIsPlay(true);
-      // startSpin;
     } else {
       TrackPlayer.pause();
-      setIsPlay(false);
-      // stopSpin;
     }
   };
-  const nextmusiccc = () => {
-    TrackPlayer.skipToNext();
-    dispatch(setIsPlayingAction(allMusicstart[song.id]));
+  const nextMusic = () => {
+    // TrackPlayer.skipToNext();
+    dispatch(setIsPlayingAction(listMusic[song.id]));
   };
-  const previousmusiccc = () => {
+  const prevMusic = () => {
     if (song.id > 1) {
-      TrackPlayer.skipToPrevious();
-      dispatch(setIsPlayingAction(allMusicstart[song.id - 2]));
+      // TrackPlayer.skipToPrevious();
+      dispatch(setIsPlayingAction(listMusic[song.id - 2]));
     }
   };
   const toggleRepeat = () => {};
+  const changeProgressTo = async (time) => {
+    const targetTime = time[0];
+    await TrackPlayer.seekTo(targetTime);
+  };
   const spinValue = useRef(new Animated.Value(0)).current;
   // const startSpin = () => {
   Animated.loop(
     Animated.timing(spinValue, {
       toValue: 1,
       duration: 10000,
-      easing: Easing.linear, // Easing is an additional import from react-native
-      useNativeDriver: true, // To make use of native driver for performance
+      easing: Easing.linear,
+      useNativeDriver: true,
     }),
   ).start();
   const spin = spinValue.interpolate({
@@ -124,23 +135,26 @@ export default function Playmusic({
   return (
     <View>
       <PlayingBar onPress={() => setModalVisible(true)}>
-        <Progress time={song.time} position={progress.position} />
+        <Progress
+          time={progress.duration}
+          position={progress.position}
+          handleUpdateProgress={async (time) => await changeProgressTo(time)}
+        />
         <View style={styles.playingbar}>
-          <Image source={{uri: song.image}} style={styles.imagesongbottom} />
+          <Image source={{uri: song?.image}} style={styles.imagesongbottom} />
           <View>
             <Text1>{song.name}</Text1>
             <TextTheme>{song.singer}</TextTheme>
           </View>
           <View style={styles.control}>
             <IconCustom
-              name={song.islike ? 'md-heart' : 'md-heart-outline'}
+              name={'md-play-skip-back'}
               size={22}
-              color="pink"
-              handlePress={() => setModalVisible(false)}
+              handlePress={() => prevMusic()}
             />
             <TextTheme style={{marginHorizontal: 20 * unitW}}>
               <IconCustom
-                name={isPlay ? 'md-pause' : 'md-play'}
+                name={isPlaying ? 'md-pause' : 'md-play'}
                 size={22}
                 handlePress={playmussic}
               />
@@ -148,7 +162,7 @@ export default function Playmusic({
             <IconCustom
               name={'md-play-skip-forward'}
               size={22}
-              handlePress={nextmusiccc}
+              handlePress={nextMusic}
             />
           </View>
         </View>
@@ -177,7 +191,13 @@ export default function Playmusic({
             source={{uri: song.image}}
           />
           <View style={styles.slider}>
-            <Progress time={song.time} position={progress.position} />
+            <Progress
+              time={song.time}
+              position={progress.position}
+              handleUpdateProgress={async (time) =>
+                await changeProgressTo(time)
+              }
+            />
           </View>
           {/* <Button title="ok" onPress={()=>setModalVisible(false)}/> */}
           <TextTheme style={styles.nameplay}>{song.name}</TextTheme>
@@ -187,11 +207,11 @@ export default function Playmusic({
             <IconCustom
               name={'md-play-skip-back'}
               size={28}
-              handlePress={() => previousmusiccc()}
+              handlePress={() => prevMusic()}
             />
             <IconCustom
               name={
-                isPlay ? 'md-pause-circle-outline' : 'md-play-circle-outline'
+                isPlaying ? 'md-pause-circle-outline' : 'md-play-circle-outline'
               }
               size={80}
               handlePress={playmussic}
@@ -200,7 +220,7 @@ export default function Playmusic({
             <IconCustom
               name={'md-play-skip-forward'}
               size={28}
-              handlePress={nextmusiccc}
+              handlePress={nextMusic}
             />
             <IconCustom
               name={'md-repeat-outline'}
@@ -275,9 +295,9 @@ const styles = StyleSheet.create({
   },
   slider: {
     marginTop: 40 * unitH,
-    alignItems: 'flex-start',
-    alignSelf: 'flex-start',
     marginHorizontal: 24 * unitW,
+    width: '100%',
+    paddingHorizontal: 16 * unitW,
   },
   control: {
     flexDirection: 'row',

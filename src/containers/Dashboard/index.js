@@ -127,7 +127,9 @@ const Dashboard = () => {
                 openInfo={() => openInfo(item)}
                 onLovePressed={() => onLovePressed(item)}
                 like={state.userInfo.sign}
-                handlePress={() => dispatch(setIsPlayingAction(item))}
+                handlePress={() => {
+                  dispatch(setIsPlayingAction(item));
+                }}
               />
             )}
             keyExtractor={(item) => item.url}

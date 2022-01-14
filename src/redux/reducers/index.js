@@ -11,12 +11,10 @@ import {
 const initialState = {
   isLoading: false,
   listMusic: [],
-  playing: {
-    isPlaying: false,
-    item: {},
-  },
+  songPlaying: null,
   listPlay: [],
   theme: darkTheme,
+  showMusicPlayer: false,
 };
 export default handleActions(
   {
@@ -33,13 +31,17 @@ export default handleActions(
         artwork: i.image,
       })),
     }),
-    [setIsPlayingAction.toString()]: (state, {payload}) => ({
-      ...state,
-      playing: {
-        isPlaying: true,
-        item: payload,
-      },
-    }),
+    [setIsPlayingAction.toString()]: (state, {payload}) => {
+      if (state.showMusicPlayer) {
+        return {...state, songPlaying: payload};
+      } else {
+        return {
+          ...state,
+          showMusicPlayer: true,
+          songPlaying: payload,
+        };
+      }
+    },
     [setDarkModeAction.toString()]: (state, {payload}) => {
       return {
         ...state,

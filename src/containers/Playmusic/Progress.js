@@ -1,37 +1,45 @@
-import React, {useRef, useEffect} from 'react';
-import {View, StyleSheet, Animated} from 'react-native';
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
+import {Slider} from '@miblanchard/react-native-slider';
 
-export default function Progress({position, time}) {
-  let animation = useRef(new Animated.Value(0));
-
-  useEffect(() => {
-    Animated.timing(animation.current, {
-      toValue: position,
-      duration: time,
-      useNativeDriver: false,
-    }).start();
-  }, [position, time]);
-
-  const width = animation.current.interpolate({
-    inputRange: [0, time],
-    outputRange: ['0%', '100%'],
-    extrapolate: 'clamp',
-  });
+export default function Progress({position, time, handleUpdateProgress}) {
   return (
-    <View style={styles.progressBar}>
-      <Animated.View
-        style={([StyleSheet.absoluteFill], {backgroundColor: '#3252CE', width})}
+    <View>
+      <Slider
+        // animateTransitions
+        value={position}
+        minimumValue={0}
+        maximumValue={time}
+        maximumTrackTintColor="#d3d3d3"
+        minimumTrackTintColor="#3252CE"
+        thumbTintColor="#21399f"
+        thumbStyle={styles.thumb}
+        trackStyle={styles.track}
+        containerStyle={styles.container}
+        onSlidingComplete={async (value) => await handleUpdateProgress(value)}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  progressBar: {
-    flexDirection: 'row',
-    height: 4,
-    width: '100%',
-    backgroundColor: 'white',
-    borderRadius: 5,
+  thumb: {
+    borderRadius: 10,
+    height: 20,
+    shadowColor: 'black',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.35,
+    shadowRadius: 2,
+    width: 20,
+  },
+  track: {
+    borderRadius: 1,
+    height: 3,
+  },
+  container: {
+    height: 20,
   },
 });

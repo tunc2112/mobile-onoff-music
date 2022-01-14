@@ -13,23 +13,17 @@ import {ContainerView} from '../asset/styles/themes';
 
 const Tab = createMaterialTopTabNavigator();
 const TabMenu = () => {
-  const playing = useSelector((state) => state.playing);
+  const showMusicPlayer = useSelector((state) => state.showMusicPlayer);
   const [modalVisible, setModalVisible] = useState(false);
-  const allMusicstart = useSelector((state) => state.listMusic);
   const menuTheme = useSelector((state) => state.theme.tabBarOptions);
-  const listPlay = useSelector((state) => state.listPlay);
-  // console.log('l2', allMusicstart)
+  console.log('TabMenu rendered');
   return (
     <ContainerView>
       <View style={styles.playBox}>
-        {playing.isPlaying && (
+        {showMusicPlayer && (
           <Playmusic
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
-            allMusic={listPlay}
-            allMusicstart={allMusicstart}
-            song={playing.item}
-            setSong={() => null}
           />
         )}
       </View>
