@@ -45,8 +45,9 @@ export default function ListSearch({navigation, route}) {
   useEffect(() => {
     for (let i = 0; i < allMusicstart.length; i++) {
       if (
-        removeVietnameseTones(value) ==
-        removeVietnameseTones(allMusicstart[i].name)
+        removeVietnameseTones(allMusicstart[i].name).includes(
+          removeVietnameseTones(value),
+        )
       ) {
         setsearch(allMusicstart[i]);
         console.log(allMusicstart[i]);

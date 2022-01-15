@@ -49,7 +49,7 @@ const Dashboard = () => {
   });
 
   const currentPlayingPlaylistId = useSelector(
-    (storeState) => storeState.currentPlaylistId,
+    (storeState) => storeState.currentPlayingPlaylistId,
   );
   const dispatch = useDispatch();
   useEffect(() => {
@@ -137,9 +137,9 @@ const Dashboard = () => {
                 onLovePressed={() => onLovePressed(item)}
                 like={state.userInfo.sign}
                 handlePress={() => {
-                  if (currentPlayingPlaylistId === null) {
-                    console.log('no null');
-                    dispatch(setCurrentPlaylistAction(null));
+                  console.log(currentPlayingPlaylistId);
+                  if (currentPlayingPlaylistId !== -1) {
+                    dispatch(setCurrentPlaylistAction(-1));
                     dispatch(setListPlayAction(musics));
                   }
                   dispatch(setIsPlayingAction(item));
