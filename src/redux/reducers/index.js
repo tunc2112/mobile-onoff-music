@@ -19,7 +19,7 @@ const initialState = {
   theme: darkTheme,
   showMusicPlayer: false,
   playlistType: 'normal', // enum ['normal', 'shuffle', 'repeat']
-  currentPlayingPlaylistId: null, // null means playing default playlist
+  currentPlayingPlaylistId: null, // null means no playlist is playing
 };
 
 const getFormattedSong = (song) => {
