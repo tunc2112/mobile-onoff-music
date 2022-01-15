@@ -156,6 +156,7 @@ const Dashboard = () => {
           showInfo={state.showInfo}
           item={state.songInfo}
           hiddenInfo={hiddenInfo}
+          isFocused={isFocused}
         />
       )}
       <AnalogPopup

@@ -19,7 +19,7 @@ import {
   setIsPlayingAction,
   setListPlayAction,
 } from '../../redux/actions';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 const Stream = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -59,15 +59,17 @@ const Stream = () => {
     setModalVisible(false);
   };
   const navigation = useNavigation();
-  const openInplaylist = (songinplaylist) => {
+  const openInplaylist = (item, index) => {
     navigation.navigate('Inplaylist', {
-      songs: songinplaylist,
+      songs: item.songinplaylist,
+      allPlaylist: allPlaylist,
+      index: index,
       user: 'Me',
     });
   };
   const renderItem = ({item, index}) => {
     return (
-      <TouchableOpacity onPress={() => openInplaylist(item.songinplaylist)}>
+      <TouchableOpacity onPress={() => openInplaylist(item, index)}>
         <Playlist
           id={item.id}
           name={item.name}

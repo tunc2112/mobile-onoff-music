@@ -17,13 +17,13 @@ export const styles = StyleSheet.create({
   iconPluss: {
     width: 56,
     height: 56,
-    backgroundColor: '#be2edd',
+    backgroundColor: '#006ce2',
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
   textcreatePlaylist: {
-    color: '#be2edd',
+    color: '#006ce2',
     fontWeight: 'bold',
     marginLeft: 8,
     fontSize: 16,

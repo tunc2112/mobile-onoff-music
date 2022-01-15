@@ -21,7 +21,7 @@ import Modal from 'react-native-modal';
 import {styles} from '../containers/Library/styles';
 import {getPlaylistFromLocal, saveData} from '../containers/storage';
 
-const InfoSongPopup = ({item, showInfo, hiddenInfo}) => {
+const InfoSongPopup = ({item, showInfo, hiddenInfo, isFocused}) => {
   // console.log('Current song', item);
   const [modalVisible, setModalVisible] = useState(false);
   const [allPlaylist, setAllPlaylist] = useState([]);
@@ -37,7 +37,7 @@ const InfoSongPopup = ({item, showInfo, hiddenInfo}) => {
   }
   useEffect(() => {
     getdata();
-  }, []);
+  }, [isFocused]);
   async function addSongToPlaylist(playlistId) {
     let updatedPlaylist = [];
     for (let i = 0; i < allPlaylist.length; i++) {

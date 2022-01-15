@@ -15,6 +15,8 @@ const SongItem = ({
   onLovePressed = null,
   handlePress = null,
   background = {},
+  inPlaylist = false,
+  removeFromPlaylist = null,
 }) => {
   const dispatch = useDispatch();
   const toggleLike = async () => {
@@ -54,11 +56,21 @@ const SongItem = ({
               </TextTheme>
             </TouchableOpacity>
           )}
-          <TouchableOpacity onPress={openInfo} style={[localStyles.p4]}>
-            <TextTheme>
-              <Icon name="md-ellipsis-vertical" size={24} />
-            </TextTheme>
-          </TouchableOpacity>
+          {inPlaylist ? (
+            <TouchableOpacity
+              onPress={removeFromPlaylist}
+              style={[localStyles.p4]}>
+              <TextTheme>
+                <Icon name="remove-circle-outline" size={24} />
+              </TextTheme>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={openInfo} style={[localStyles.p4]}>
+              <TextTheme>
+                <Icon name="md-ellipsis-vertical" size={24} />
+              </TextTheme>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     )

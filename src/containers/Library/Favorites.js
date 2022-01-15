@@ -7,26 +7,24 @@ import SongItem from '../../components/SongItem';
 import {setIsPlayingAction} from '../../redux/actions';
 
 const Favorites = () => {
-  const isFocused = useIsFocused();
+  // const isFocused = useIsFocused();
   const music = useSelector((state) => state.listMusic);
   const dispatch = useDispatch();
   return (
     <ContainerView>
-      {isFocused && (
-        <FlatList
-          data={music}
-          renderItem={({item}) =>
-            item.islike === true && (
-              <SongItem
-                item={item}
-                handlePress={() => dispatch(setIsPlayingAction(item))}
-              />
-            )
-          }
-          keyExtractor={(item) => item.url}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
+      <FlatList
+        data={music}
+        renderItem={({item}) =>
+          item.islike === true && (
+            <SongItem
+              item={item}
+              handlePress={() => dispatch(setIsPlayingAction(item))}
+            />
+          )
+        }
+        keyExtractor={(item) => item.url}
+        showsVerticalScrollIndicator={false}
+      />
     </ContainerView>
   );
 };
