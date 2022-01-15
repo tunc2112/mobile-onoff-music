@@ -25,32 +25,40 @@ export default function Playmusic({modalVisible, setModalVisible}) {
   const dispatch = useDispatch();
 
   const song = useSelector((state) => state.songPlaying);
-  const listMusic = useSelector((state) => state.listMusic);
+
   const listPlay = useSelector((state) => state.listPlay);
   const playlistType = useSelector((state) => state.playlistType);
   const theme = useSelector((state) => state.theme);
 
   // console.log('Playmusic rendered', song.id);
 
-  useTrackPlayerEvents([TrackPlayerEvents.PLAYBACK_TRACK_CHANGED], (event) => {
-    console.log('song changed', event);
-    if (event.type === TrackPlayerEvents.PLAYBACK_TRACK_CHANGED) {
-      if (event.nextTrack != null) {
-        if (event.track == null || event.track == song.id) {
-          // Change song based on playlist type (shuffle, repeat,...)
-          let nextTrackIndex = Number(event.nextTrack) - 1;
-          if (playlistType === 'shuffle') {
-            nextTrackIndex = Math.floor(Math.random() * listPlay.length);
-          } else if (playlistType === 'repeat') {
-            nextTrackIndex = Number(event.track) - 1;
-            console.log('nextTrackIndex', nextTrackIndex);
+  useTrackPlayerEvents(
+    [
+      TrackPlayerEvents.PLAYBACK_TRACK_CHANGED,
+      TrackPlayerEvents.PLAYBACK_QUEUE_ENDED,
+    ],
+    (event) => {
+      if (event.type === TrackPlayerEvents.PLAYBACK_TRACK_CHANGED) {
+        console.log('song changed', event);
+        if (event.nextTrack != null) {
+          if (event.track == null || event.track == song.id) {
+            // Change song based on playlist type (shuffle, repeat,...)
+            let nextTrackIndex = getTrackIndex(event.nextTrack);
+            if (playlistType === 'shuffle') {
+              nextTrackIndex = Math.floor(Math.random() * listPlay.length);
+            } else if (playlistType === 'repeat') {
+              nextTrackIndex = getTrackIndex(event.track);
+              console.log('nextTrackIndex', nextTrackIndex);
+            }
+            TrackPlayer.skip(String(listPlay[nextTrackIndex].id));
+            dispatch(setIsPlayingAction(listPlay[nextTrackIndex]));
           }
-          TrackPlayer.skip(String(listMusic[nextTrackIndex].id));
-          dispatch(setIsPlayingAction(listMusic[nextTrackIndex]));
         }
       }
-    }
-  });
+
+      // if (event.type === TrackPlayerEvents.PLAYBACK_QUEUE_ENDED)
+    },
+  );
 
   const isPlaying = [
     TrackPlayer.STATE_PLAYING,
@@ -102,7 +110,7 @@ export default function Playmusic({modalVisible, setModalVisible}) {
       // await TrackPlayer.play();
     });
     // startSpin;
-  }, []);
+  }, [listPlay]);
   useEffect(() => {
     TrackPlayer.skip(String(song.id));
     console.log('song.id', song.id);
@@ -117,13 +125,31 @@ export default function Playmusic({modalVisible, setModalVisible}) {
   };
   const nextMusic = () => {
     // TrackPlayer.skipToNext();
-    dispatch(setIsPlayingAction(listMusic[song.id]));
+    const currentIndex = getTrackIndex(song.id);
+    if (currentIndex === listPlay.length - 1) {
+      dispatch(setIsPlayingAction(listPlay[0]));
+    } else {
+      dispatch(setIsPlayingAction(listPlay[currentIndex + 1]));
+    }
   };
   const prevMusic = () => {
-    if (song.id > 1) {
-      // TrackPlayer.skipToPrevious();
-      dispatch(setIsPlayingAction(listMusic[song.id - 2]));
+    // TrackPlayer.skipToPrevious();
+    const currentIndex = getTrackIndex(song.id);
+    if (currentIndex === 0) {
+      dispatch(setIsPlayingAction(listPlay[listPlay.length - 1]));
+    } else {
+      dispatch(setIsPlayingAction(listPlay[currentIndex - 1]));
     }
+  };
+  const getTrackIndex = (songId) => {
+    let nextTrackIndex = null;
+    for (let i = 0; i < listPlay.length; i++) {
+      if (listPlay[i].id == songId) {
+        nextTrackIndex = i;
+        break;
+      }
+    }
+    return nextTrackIndex;
   };
   const toggleRepeat = () => {
     const updatedType = playlistType !== 'repeat' ? 'repeat' : 'normal';
@@ -160,10 +186,10 @@ export default function Playmusic({modalVisible, setModalVisible}) {
           handleUpdateProgress={async (time) => await changeProgressTo(time)}
         />
         <View style={styles.playingbar}>
-          <Image source={{uri: song?.image}} style={styles.imagesongbottom} />
+          <Image source={{uri: song?.artwork}} style={styles.imagesongbottom} />
           <View>
-            <Text1>{song.name}</Text1>
-            <TextTheme>{song.singer}</TextTheme>
+            <Text1>{song.title}</Text1>
+            <TextTheme>{song.artist}</TextTheme>
           </View>
           <View style={styles.control}>
             <IconCustom
@@ -196,8 +222,8 @@ export default function Playmusic({modalVisible, setModalVisible}) {
               handlePress={() => setModalVisible(false)}
             />
             <View>
-              <Text1 style={styles.title}>{song.name}</Text1>
-              <Text2 style={styles.lable}>{song.singer}</Text2>
+              <Text1 style={styles.title}>{song.title}</Text1>
+              <Text2 style={styles.lable}>{song.artist}</Text2>
             </View>
             <IconCustom
               style={styles.options}
@@ -207,11 +233,11 @@ export default function Playmusic({modalVisible, setModalVisible}) {
           </View>
           <Animated.Image
             style={[styles.imagesong, {transform: [{rotate: spin}]}]}
-            source={{uri: song.image}}
+            source={{uri: song.artwork}}
           />
           <View style={styles.slider}>
             <Progress
-              time={song.time}
+              time={song.duration}
               position={progress.position}
               handleUpdateProgress={async (time) =>
                 await changeProgressTo(time)
@@ -219,8 +245,8 @@ export default function Playmusic({modalVisible, setModalVisible}) {
             />
           </View>
           {/* <Button title="ok" onPress={()=>setModalVisible(false)}/> */}
-          <TextTheme style={styles.nameplay}>{song.name}</TextTheme>
-          <TextTheme style={styles.singerplay}>{song.singer}</TextTheme>
+          <TextTheme style={styles.nameplay}>{song.title}</TextTheme>
+          <TextTheme style={styles.singerplay}>{song.artist}</TextTheme>
           <View style={styles.plpau}>
             <IconCustom
               name={'md-shuffle-outline'}
