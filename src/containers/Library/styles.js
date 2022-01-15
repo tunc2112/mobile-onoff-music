@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     marginTop: 8,
     width: '100%',
     height: 60,
-    // backgroundColor:"red",
+    // backgroundColor:"white",
     alignItems: 'center',
     paddingHorizontal: 8,
     flexDirection: 'row',
@@ -27,6 +27,11 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 8,
     fontSize: 16,
+  },
+  subTextcreatePlaylist: {
+    color: '#b6b4d1',
+    marginLeft: 8,
+    fontSize: 10,
   },
   inputPlaylistName: {
     width: '100%',
@@ -56,4 +61,6 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     margin: 0,
   },
+  playlistTexts: {flexDirection: 'column'},
+  playlistIcon: {position: 'absolute', right: 15},
 });
