@@ -70,16 +70,11 @@ const InfoSongPopup = ({item, showInfo, hiddenInfo}) => {
           </View>
         </View>
         <View>
-          <OptionItem icon={'md-eye-off-outline'} text="Ẩn bài hát" />
           <TouchableOpacity onPress={() => setModalVisible(true)}>
             <OptionItem icon={'md-bookmark-outline'} text="Thêm vào playlist" />
           </TouchableOpacity>
 
           <OptionItem icon={'md-heart-outline'} text="Thêm vào yêu thích" />
-          <OptionItem
-            icon={'md-notifications-outline'}
-            text="Cài làm nhạc chuông"
-          />
         </View>
       </ContainerModal>
       <Modal

@@ -52,7 +52,7 @@ const SettingPopup = ({isOpen, hidden}) => {
             onValueChange={changeColorMode}
           />
         </View>
-        <View style={localStyle.listSetting}>
+        {/* <View style={localStyle.listSetting}>
           <View style={localStyle.row}>
             <IconCustom
               name="md-albums"
@@ -65,8 +65,8 @@ const SettingPopup = ({isOpen, hidden}) => {
           <Switch
             value={state.s1}
             onValueChange={() => setState({s1: !state.s1})}
-          />
-        </View>
+          /> 
+        </View> */}
       </SettingModal>
     </Modal>
   );

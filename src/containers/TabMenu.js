@@ -66,7 +66,7 @@ const TabMenu = () => {
             ),
           }}
         /> */}
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Trendy"
           component={Trendy}
           options={{
@@ -78,7 +78,7 @@ const TabMenu = () => {
               />
             ),
           }}
-        />
+        /> */}
         {/* <Tab.Screen
           name="User"
           component={User}
