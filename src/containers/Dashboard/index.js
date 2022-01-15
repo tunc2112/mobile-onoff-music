@@ -13,7 +13,12 @@ import ListAlbums from '../../components/ListAlbums';
 import Loading from '../../components/Loading';
 import SettingPopup from '../../components/SettingPopup';
 import SongItem from '../../components/SongItem';
-import {fetchAsyncAction, setIsPlayingAction} from '../../redux/actions';
+import {
+  fetchAsyncAction,
+  setIsPlayingAction,
+  setCurrentPlaylistAction,
+  setListPlayAction,
+} from '../../redux/actions';
 import {stylescreen} from './styled';
 
 const Dashboard = () => {
@@ -42,6 +47,10 @@ const Dashboard = () => {
     isShown: false,
     title: '',
   });
+
+  const currentPlayingPlaylistId = useSelector(
+    (storeState) => storeState.currentPlayingPlaylistId,
+  );
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchAsyncAction({}));
@@ -128,6 +137,11 @@ const Dashboard = () => {
                 onLovePressed={() => onLovePressed(item)}
                 like={state.userInfo.sign}
                 handlePress={() => {
+                  console.log(currentPlayingPlaylistId);
+                  if (currentPlayingPlaylistId !== -1) {
+                    dispatch(setCurrentPlaylistAction(-1));
+                    dispatch(setListPlayAction(musics));
+                  }
                   dispatch(setIsPlayingAction(item));
                 }}
               />

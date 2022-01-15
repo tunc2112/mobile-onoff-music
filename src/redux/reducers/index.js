@@ -7,6 +7,8 @@ import {
   setDataAction,
   setIsPlayingAction,
   setPlaylistTypeAction,
+  setCurrentPlaylistAction,
+  setListPlayAction,
 } from '../actions';
 
 const initialState = {
@@ -17,7 +19,20 @@ const initialState = {
   theme: darkTheme,
   showMusicPlayer: false,
   playlistType: 'normal', // enum ['normal', 'shuffle', 'repeat']
+  currentPlayingPlaylistId: null, // null means playing default playlist
 };
+
+const getFormattedSong = (song) => {
+  return {
+    id: String(song.id),
+    url: song.url,
+    title: song.title || song.name,
+    artist: song.artist || song.singer,
+    artwork: song.artwork || song.image,
+    duration: song.duration || song.time,
+  };
+};
+
 export default handleActions(
   {
     [onLoadingAction.toString()]: (state) => ({...state, isLoading: true}),
@@ -25,22 +40,16 @@ export default handleActions(
     [setDataAction.toString()]: (state, {payload}) => ({
       ...state,
       listMusic: payload,
-      listPlay: payload.map((i) => ({
-        id: String(i.id),
-        url: i.url,
-        title: i.name,
-        artist: i.singer,
-        artwork: i.image,
-      })),
+      // listPlay: payload.map((item) => getFormattedSong(item)),
     }),
     [setIsPlayingAction.toString()]: (state, {payload}) => {
       if (state.showMusicPlayer) {
-        return {...state, songPlaying: payload};
+        return {...state, songPlaying: getFormattedSong(payload)};
       } else {
         return {
           ...state,
           showMusicPlayer: true,
-          songPlaying: payload,
+          songPlaying: getFormattedSong(payload),
         };
       }
     },
@@ -54,6 +63,18 @@ export default handleActions(
       return {
         ...state,
         playlistType: payload,
+      };
+    },
+    [setCurrentPlaylistAction.toString()]: (state, {payload}) => {
+      return {
+        ...state,
+        currentPlayingPlaylistId: payload,
+      };
+    },
+    [setListPlayAction.toString()]: (state, {payload}) => {
+      return {
+        ...state,
+        listPlay: payload.map((item) => getFormattedSong(item)),
       };
     },
   },

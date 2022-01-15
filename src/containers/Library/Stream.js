@@ -14,11 +14,20 @@ import {useNavigation} from '@react-navigation/native';
 import IconCustom from '../../components/IconCustom';
 import Modal from 'react-native-modal';
 import {getData, getPlaylistFromLocal, saveData} from '../storage';
+import {
+  setCurrentPlaylistAction,
+  setIsPlayingAction,
+  setListPlayAction,
+} from '../../redux/actions';
+import {useDispatch} from 'react-redux';
 
 const Stream = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [allPlaylist, setAllPlaylist] = useState([]);
   const [namePlaylist, setNamePlaylist] = useState('');
+
+  const dispatch = useDispatch();
+
   async function getPlaylists() {
     try {
       const playlists = (await getPlaylistFromLocal()) || [];
@@ -59,7 +68,17 @@ const Stream = () => {
   const renderItem = ({item, index}) => {
     return (
       <TouchableOpacity onPress={() => openInplaylist(item.songinplaylist)}>
-        <Playlist name={item.name} image={item?.songinplaylist[0]?.image} />
+        <Playlist
+          id={item.id}
+          name={item.name}
+          image={item?.songinplaylist[0]?.image}
+          numberOfSongs={item.songinplaylist.length}
+          togglePlaying={() => {
+            dispatch(setCurrentPlaylistAction(item.id));
+            dispatch(setListPlayAction(item.songinplaylist));
+            dispatch(setIsPlayingAction(item.songinplaylist[0].id));
+          }}
+        />
       </TouchableOpacity>
     );
   };

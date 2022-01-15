@@ -13,6 +13,8 @@ const actions = createActions({
   SET_IS_PLAYING_ACTION: null,
   SET_DARK_MODE_ACTION: null,
   SET_PLAYLIST_TYPE_ACTION: null,
+  SET_CURRENT_PLAYLIST_ACTION: null,
+  SET_LIST_PLAY_ACTION: null,
 });
 
 export const {
@@ -23,4 +25,6 @@ export const {
   setIsPlayingAction,
   setDarkModeAction,
   setPlaylistTypeAction,
+  setCurrentPlaylistAction,
+  setListPlayAction,
 } = actions;
