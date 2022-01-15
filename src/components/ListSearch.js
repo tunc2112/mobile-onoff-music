@@ -5,7 +5,7 @@ import {useState} from 'react/cjs/react.development';
 import {ContainerView} from '../asset/styles/themes';
 import {setIsPlayingAction} from '../redux/actions';
 import SongItem from './SongItem';
-function removeVietnameseTones(str) {
+function normalize(str) {
   str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
   str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
   str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
@@ -40,30 +40,48 @@ function removeVietnameseTones(str) {
 export default function ListSearch({navigation, route}) {
   const {value} = route.params;
   const allMusicstart = useSelector((state) => state.listMusic);
-  const [search, setsearch] = useState({});
+
+  const result = [];
+  for (let i = 0; i < allMusicstart.length; ++i) {
+    if (normalize(allMusicstart[i].name).includes(normalize(value))) {
+      result.push(allMusicstart[i]);
+    }
+  }
+  console.log(result.length);
+
   const dispatch = useDispatch();
   useEffect(() => {
-    for (let i = 0; i < allMusicstart.length; i++) {
-      if (
-        removeVietnameseTones(allMusicstart[i].name).includes(
-          removeVietnameseTones(value),
-        )
-      ) {
-        setsearch(allMusicstart[i]);
-        console.log(allMusicstart[i]);
-      }
-      // console.log(removeVietnameseTones(allMusicstart[0].name))
-    }
-    console.log(removeVietnameseTones(value));
+    console.log(normalize(value));
     // console.log(value)
   }, []);
   return (
     <ContainerView>
-      <SongItem
-        item={search}
-        openInfo={() => openInfo(search)}
-        handlePress={() => dispatch(setIsPlayingAction(search))}
-      />
+      {result.length > 0 ? (
+        <FlatList
+          data={result}
+          renderItem={({item}) => (
+            <SongItem
+              item={item}
+              showLoveButton={false}
+              openInfo={() => {}}
+              handlePress={() => dispatch(setIsPlayingAction(item))}
+            />
+          )}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <Text
+          style={{
+            color: 'red',
+            alignSelf: 'center',
+            marginTop: 20,
+            fontSize: 15,
+            fontWeight: 'bold',
+          }}>
+          Không có kết quả
+        </Text>
+      )}
     </ContainerView>
   );
 }

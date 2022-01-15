@@ -51,16 +51,6 @@ const SearchForm = () => {
         </ButtonTheme>
         <ButtonTheme
           style={localStyles.chip}
-          onPress={() => pressChip('Sao em nỡ đành quên')}>
-          <TextWhite>Sao em nỡ đành quên</TextWhite>
-        </ButtonTheme>
-        <ButtonTheme
-          style={localStyles.chip}
-          onPress={() => pressChip('Hiphop')}>
-          <TextWhite>Hiphop</TextWhite>
-        </ButtonTheme>
-        <ButtonTheme
-          style={localStyles.chip}
           onPress={() => pressChip('Chếc Khăn Gió Ấm')}>
           <TextWhite>Chếc Khăn Gió Ấm</TextWhite>
         </ButtonTheme>
